@@ -38,7 +38,7 @@ namespace MudExtensions
         private readonly string? multiSelectionText;
         static readonly KeyInterceptorOptions _keyInterceptorOptions = new()
         {
-            //EnableLogging = true,
+            EnableLogging = true,
             TargetClass = "mud-input-control",
             Keys =
             {
@@ -850,7 +850,7 @@ namespace MudExtensions
             if (firstRender)
             {
                 // TODO: Use Task for HandleKeyDown / HandleKeyDown
-                await KeyInterceptorService.SubscribeAsync(_elementId, _keyInterceptorOptions, keyDown: HandleKeyDown, keyUp: HandleKeyDown);
+                await KeyInterceptorService.SubscribeAsync(_elementId, _keyInterceptorOptions, keyDown: HandleKeyDown, keyUp: HandleKeyUp);
                 await UpdateDataVisualiserTextAsync();
                 _firstRendered = true;
                 StateHasChanged();
@@ -1162,7 +1162,7 @@ namespace MudExtensions
             UpdateIcon();
 
             // Disable escape propagation: if ComboBox menu is open, only the ComboBox popover should close and underlying components should not handle escape key.
-            await KeyInterceptorService.UpdateKeyAsync(_elementId, new KeyOptions("Escape", stopDown: "Key+none"));
+            await KeyInterceptorService.UpdateKeyAsync(_elementId, new KeyOptions("Escape", stopDown: "key+none"));
 
             _allSelected = GetAllSelectedState();
 
