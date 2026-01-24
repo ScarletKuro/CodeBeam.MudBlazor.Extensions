@@ -1346,6 +1346,7 @@ namespace MudExtensions
                 return base.ConvertSet(input);
             }
 
+            var n = ToStringFunc(input);
             return ToStringFunc(input);
         }
     }
