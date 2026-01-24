@@ -518,29 +518,12 @@ namespace MudExtensions
             }
         }
 
-        private Func<T?, string?>? _toStringFunc = x => x?.ToString();
         /// <summary>
         /// Defines how values are displayed in the drop-down list
         /// </summary>
         [Parameter]
         [Category(CategoryTypes.FormComponent.ListBehavior)]
-        public Func<T?, string?>? ToStringFunc
-        {
-            get => _toStringFunc;
-            set
-            {
-                if (_toStringFunc == value)
-                    return;
-                _toStringFunc = value;
-                Converter = Conversions.From<T, string>(
-                    x => _toStringFunc?.Invoke(x) ?? x?.ToString() ?? string.Empty,
-                    _ => throw new NotSupportedException("String -> T conversion is not supported."));
-                //Converter = new DefaultConverter<T?>
-                //{
-                //    SetFunc = _toStringFunc ?? (x => x?.ToString()),
-                //};
-            }
-        }
+        public Func<T?, string?>? ToStringFunc { get; set; }
 
         /// <summary>
         /// If true, a null item will be added to the list (Only for ItemCollection).
@@ -1351,6 +1334,19 @@ namespace MudExtensions
         public bool GetOpenState()
         {
             return _isOpen;
+        }
+
+        /// <inheritdoc />
+        protected override string? ConvertSet(T? input) => ConverterSetCore(input);
+
+        internal string? ConverterSetCore(T? input)
+        {
+            if (ToStringFunc is null)
+            {
+                return base.ConvertSet(input);
+            }
+
+            return ToStringFunc(input);
         }
     }
 }
