@@ -18,6 +18,12 @@ namespace MudExtensions
         /// </summary>
         protected MudBaseInputExtended()
         {
+            Converter = new DefaultConverter<T>
+            {
+                Culture = GetCulture,
+                Format = GetFormat
+            };
+
             //using var registerScope = CreateRegisterScope();
             //_textState = registerScope.RegisterParameter<string?>(nameof(Text))
             //    .WithParameter(() => Text)

@@ -704,7 +704,7 @@ namespace MudExtensions
                         var collectionValue = ItemCollection.FirstOrDefault(x => x != null && (Comparer != null ? Comparer.Equals(x, val) : x.Equals(val)));
                         if (collectionValue != null)
                         {
-                            textList.Add(base.ConvertSet(collectionValue));
+                            textList.Add(ConvertSet(collectionValue));
                         }
                     }
                 }
@@ -714,13 +714,13 @@ namespace MudExtensions
                     {
                         if (!Strict && !Items.Select(x => x.Value).Contains(val))
                         {
-                            textList.Add(ToStringFunc != null ? ToStringFunc(val) : base.ConvertSet(val));
+                            textList.Add(ConvertSet(val));
                             continue;
                         }
                         var item = Items.FirstOrDefault(x => x != null && (x.Value == null ? val == null : Comparer != null ? Comparer.Equals(x.Value, val) : x.Value.Equals(val)));
                         if (item != null)
                         {
-                            textList.Add(!string.IsNullOrEmpty(item.Text) ? item.Text : base.ConvertSet(item.Value));
+                            textList.Add(!string.IsNullOrEmpty(item.Text) ? item.Text : ConvertSet(item.Value));
                         }
                     }
                 }
@@ -746,9 +746,9 @@ namespace MudExtensions
                 var item = Items?.FirstOrDefault(x => ReadValue == null ? x.Value == null : Comparer != null ? Comparer.Equals(ReadValue, x.Value) : ReadValue.Equals(x.Value));
                 if (item == null)
                 {
-                    return SetTextAndUpdateValueAsync(base.ConvertSet(ReadValue), false);
+                    return SetTextAndUpdateValueAsync(ConvertSet(ReadValue), false);
                 }
-                return SetTextAndUpdateValueAsync((!string.IsNullOrEmpty(item.Text) ? item.Text : base.ConvertSet(item.Value)), updateValue: updateValue);
+                return SetTextAndUpdateValueAsync((!string.IsNullOrEmpty(item.Text) ? item.Text : ConvertSet(item.Value)), updateValue: updateValue);
             }
         }
 
@@ -787,6 +787,17 @@ namespace MudExtensions
         {
             base.OnParametersSet();
             UpdateIcon();
+            UpdateConverter();
+        }
+
+        private void UpdateConverter()
+        {
+            if (ToStringFunc is not null)
+            {
+                Converter = Conversions.From<T, string>(
+                    x => ToStringFunc?.Invoke(x) ?? x?.ToString() ?? string.Empty,
+                    _ => throw new NotSupportedException("String -> T conversion is not supported."));
+            }
         }
 
         /// <summary>
@@ -1337,17 +1348,19 @@ namespace MudExtensions
         }
 
         /// <inheritdoc />
-        protected override string? ConvertSet(T? input) => ConverterSetCore(input);
-
-        internal string? ConverterSetCore(T? input)
+        protected override string? ConvertSet(T? input)
         {
-            if (ToStringFunc is null)
+            if (ToStringFunc is not null)
             {
-                return base.ConvertSet(input);
+                return ToStringFunc(input);
             }
 
-            var n = ToStringFunc(input);
-            return ToStringFunc(input);
+            return base.ConvertSet(input);
         }
+
+        /// <summary>
+        /// Converts a value to its string representation. Used by MudSelectItemExtended.
+        /// </summary>
+        internal string? ConvertToString(T? input) => ConvertSet(input);
     }
 }

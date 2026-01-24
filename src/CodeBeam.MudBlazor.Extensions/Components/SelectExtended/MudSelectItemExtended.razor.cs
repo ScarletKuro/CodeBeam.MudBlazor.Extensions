@@ -152,12 +152,10 @@ namespace MudExtensions
             {
                 if (MudSelectExtended == null)
                 {
-                    var b = $"{(string.IsNullOrEmpty(Text) ? Value : Text)}";
                     return $"{(string.IsNullOrEmpty(Text) ? Value : Text)}";
                 }
 
-                var n = !string.IsNullOrEmpty(Text) ? Text : MudSelectExtended.ConverterSetCore(Value);
-                return !string.IsNullOrEmpty(Text) ? Text : MudSelectExtended.ConverterSetCore(Value);
+                return !string.IsNullOrEmpty(Text) ? Text : MudSelectExtended.ConvertToString(Value);
             }
         }
 
