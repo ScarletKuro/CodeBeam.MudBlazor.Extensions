@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using MudBlazor.Extensions;
 using MudBlazor.Utilities;
+using MudBlazor.Extensions;
 
 namespace MudExtensions
 {
@@ -43,7 +43,7 @@ namespace MudExtensions
         /// The parent select component
         /// </summary>
         [CascadingParameter]
-        MudComboBox<T> MudComboBox { get; set; } = null!;
+        private MudComboBox<T>? MudComboBox { get; set; }
 
         /// <summary>
         /// Prevents the user from interacting with this item.
@@ -277,7 +277,7 @@ namespace MudExtensions
             if (MudComboBox.MultiSelection && MudComboBox?.SelectedValues?.Contains(Value) == true)
                 Selected = true;
 
-            else if (MudComboBox?.MultiSelection == false && ((MudComboBox.Value is null && Value is null) || MudComboBox.Value?.Equals(Value) == true))
+            else if (MudComboBox?.MultiSelection == false && ((MudComboBox.GetState(x => x.Value) is null && Value is null) || MudComboBox.GetState(x => x.Value)?.Equals(Value) == true))
                 Selected = true;
             else
                 Selected = false;
@@ -289,9 +289,13 @@ namespace MudExtensions
         /// <returns></returns>
         protected async Task HandleOnClick()
         {
-            await MudComboBox.ToggleOption(this, !Selected);
-            await InvokeAsync(StateHasChanged);
-            await MudComboBox.FocusAsync();
+            if (MudComboBox is not null)
+            {
+                await MudComboBox.ToggleOption(this, !Selected);
+                await InvokeAsync(StateHasChanged);
+                await MudComboBox.FocusAsync();
+            }
+
             await OnClick.InvokeAsync();
         }
 

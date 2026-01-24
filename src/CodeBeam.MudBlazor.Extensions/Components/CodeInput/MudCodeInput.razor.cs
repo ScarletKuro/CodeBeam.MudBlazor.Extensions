@@ -100,7 +100,7 @@ namespace MudExtensions
         /// <summary>
         /// The value of the input.
         /// </summary>
-        [Parameter]
+        [Parameter, ParameterState]
         [Category(CategoryTypes.FormComponent.Behavior)]
         public T? Value { get; set; }
 
@@ -114,7 +114,7 @@ namespace MudExtensions
         /// <summary>
         /// The number of text fields.
         /// </summary>
-        [Parameter]
+        [Parameter, ParameterState]
         [Category(CategoryTypes.FormComponent.Behavior)]
         public int Count { get; set; }
 

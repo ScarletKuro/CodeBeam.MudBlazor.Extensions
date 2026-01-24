@@ -189,7 +189,6 @@ namespace MudExtensions
             return Disabled;
         }
 
-
         /// <summary>
         /// 
         /// </summary>
