@@ -795,7 +795,7 @@ namespace MudExtensions
             if (ToStringFunc is not null)
             {
                 Converter = Conversions.From<T, string>(
-                    x => ToStringFunc?.Invoke(x) ?? x?.ToString() ?? string.Empty,
+                    x => ToStringFunc.Invoke(x) ?? x?.ToString() ?? string.Empty,
                     _ => throw new NotSupportedException("String -> T conversion is not supported."));
             }
         }
